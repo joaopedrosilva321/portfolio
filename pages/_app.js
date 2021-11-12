@@ -35,9 +35,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #__next {
-    padding: 0 24px;
-    max-width: 1058px;
-    margin: 0 auto;
+    // padding: 0 24px;
+    // max-width: 1058px;
+    // margin: 0 auto;
     @media only screen and (min-width: 920px) {
         & {
             padding: 0;
@@ -99,7 +99,7 @@ const theme = {
       Primary: '#FFFFFF',
       Secondary: '#F2F2F2',
       Tertiary: '#E0E0E0',
-      Quaternary: '#BDBDBD',
+      Quaternary: '#888',
     }
   },
 }

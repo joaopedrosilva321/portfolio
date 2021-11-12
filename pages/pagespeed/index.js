@@ -8,12 +8,12 @@ import { useRouter } from 'next/router'
 import Aindanaosei from '../../components/Post/Content/Aindanaosei'
 import Nav from '../../components/Nav'
 import CicleScore from '../../components/CicleScore'
-import SpeedInput from '../../components/SpeedInput'
+// import SpeedInput from '../../components/SpeedInput'
 import AnalyticsHighlight from '../../components/AnalyticsHighlight'
 import Iphone from '../../components/IphoneX'
 import FooterConvite from '../../components/FooterConvite'
 import Footer from '../../components/Footer'
-import { filterGooglePageSpeed } from '../../utils/filterGooglePageSpeed'
+// import { filterGooglePageSpeed } from '../../utils/filterGooglePageSpeed'
 
 
 
@@ -172,6 +172,17 @@ const ShadowIphone = styled.div`
   height: 100%;
 `
 
+const Input = styled.input`
+    width: 100%;
+    padding: 12px 16px;
+    border-width: 0;
+    border-radius: 4px;
+    outline: 0;
+    background: transparent;
+    color: #888;
+    fontSize: 14;
+`
+
 export default function Projects() {
 
   const [url, setUrl] = useState('');
@@ -193,17 +204,17 @@ export default function Projects() {
   const site = {
     development: 'http://localhost:3000',
     production: 'https://faustos.vercel.app'
-  }['production']
+  }['development']
 
 
 
   const router = useRouter()
-  
+
 
 
   const gerarToken = () => {
     const token = Math.random().toString(36).substr(2);
-    setTokenSite(token) 
+    setTokenSite(token)
     return token
   }
 
@@ -223,11 +234,11 @@ export default function Projects() {
     try {
       // gerando e adiconando token da sessão
       const token = gerarToken()
-      
+
       // resetando todos os erros antes de iniciar uma nova verificação
       setErrProcess()
 
-     
+
       // pegando o endereço do input ou da barra de pesquisa
       let uri = url || router.query.url;
       // let uri = url
@@ -260,23 +271,24 @@ export default function Projects() {
       setAnimationLoading(e => !e)
 
 
-
-      const responseGoogle = fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?strategy=mobile&url=${uri}&key=AIzaSyAsCedc8UwDt3aHNMMFFXpf3GHYkzV67WU&locale=pt-BR`);
-      const response = fetch(`${site}/api/scanner?url=${uri}`)
-
-      const [scoreGooglePageSpeed, apiPageSpeed] = await Promise.all([responseGoogle, response])
-
-
-      const lighthouse = await scoreGooglePageSpeed.json();
-      const data = await apiPageSpeed.json()
+      const mixPromiseArray = [
+        fetch(`${site}/api/scannergoogle?url=${uri}`), 
+        fetch(`${site}/api/scanner?url=${uri}`)
+      ]
 
 
+      const response = await Promise.all(mixPromiseArray)
 
-      const dataGoogle = filterGooglePageSpeed(lighthouse)
+      response.map(e => { if(!e.ok) throw '' } )
+
+
+      const lighthouse = await response[0].json();
+      const data = await response[1].json()
+
 
       const dados = {
         'token': token,
-        'antes': dataGoogle,
+        'antes': lighthouse,
         'depois': data
       }
 
@@ -314,15 +326,16 @@ export default function Projects() {
             <form onSubmit={e => { e.preventDefault(), handleSubmit(e) }}>
               <div style={{ display: 'flex', border: '1px solid #888', borderRadius: 8, height: 48, fontSize: 16 }}>
                 <div style={{ width: '100%', display: 'flex', alignContent: 'center' }}>
-                  <SpeedInput disabled={!animationLoading ? false : true} styles={{ background: 'transparent', color: '#888', fontSize: 14 }} setValue={setUrl} value={url} />
+                  {/* <SpeedInput disabled={!animationLoading ? false : true} styles={{ background: 'transparent', color: '#888', fontSize: 14 }} setValue={setUrl} value={url} /> */}
+                  <Input disabled={!animationLoading ? false : true} onChange={e => setUrl(e.target.value)|| url} value={url} type="text" placeholder="Insira uma URL do seu site aqui" />
                 </div>
                 <div>
                   {
-                    !animationLoading 
-                    ? <ButtonSend >Analizar</ButtonSend>
-                    : <ButtonSend onClick={e => { e.preventDefault(), gerarToken(), setAnimationLoading(false)}} style={{ color: '#ff4e42', background: 'transparent' }}>Cancelar</ButtonSend>
+                    !animationLoading
+                      ? <ButtonSend >Analizar</ButtonSend>
+                      : <ButtonSend onClick={e => { e.preventDefault(), gerarToken(), setAnimationLoading(false) }} style={{ color: '#ff4e42', background: 'transparent' }}>Cancelar</ButtonSend>
                   }
-                  
+
                 </div>
               </div>
             </form>
@@ -335,7 +348,8 @@ export default function Projects() {
           <Iphone>
             <ShadowIphone />
             {
-              dataInsights && tokenSite == dataInsights.token  ? <img src={dataInsights.antes.imagens['Final Screenshot']} style={{ width: '100%', margin: '-25px 0 0 0' }} /> : <>
+              dataInsights && tokenSite == dataInsights.token && dataInsights.antes.imagens['final-screenshot'] ? <img src={dataInsights.antes.imagens['final-screenshot']} style={{ width: '100%', margin: '-25px 0 0 0' }} /> : 
+              <>
                 <LazerScanner inicioAnimacao={inicioAnimationLoading + 0.5} style={{ display: !animationLoading ? 'none' : 'block' }} />
 
 

@@ -2,12 +2,12 @@ import styled from "styled-components"
 
 const Iphone = styled.div`
 
-overflow: hidden;
-height: 350px;
+// overflow: hidden;
+height: ${props => props.heightS};
 
 .iphonex {
-  height: 500px;
-  width: 240px;
+  height: inherit;
+  width: inherit;
   position: relative;
   margin 0 auto;
 }
@@ -15,13 +15,14 @@ height: 350px;
 .iphonex__case {
   position: absolute;
   background: transparent;
-  width: 235px;
-  height: 475px;
-  border: 11px solid ${props => props.theme.colorsDark.fonts.Quaternary};
+  width: inherit;
+  height: inherit;
+  overflow: hidden;
   box-sizing: border-box;
   border-radius: 35px;
-  left: 3px;
-  overflow: hidden;
+  // border: 11px solid ${props => props.theme.colorsDark.fonts.Quaternary};
+  background: linear-gradient(#333, #111 ${props => props.heightS || '330px'}) padding-box, linear-gradient(to bottom, #181818 , #111 ${props => props.heightS}) border-box;
+  border: 11px solid transparent;
 }
 
 .iphonex__top {
@@ -70,57 +71,69 @@ height: 350px;
 
 .iphonex__screen {
   width: 100%;
-  height: 320px;
+  // height: 320px;
   background: transparent;
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
-  top: 25px;
+  overflow: hidden;
+  border-radius: 20px;
+  // top: 25px;
   position: absolute;
+  cursor: pointer;
+  user-select: none;
 }
 
 .iphonex__power {
   width: 3px;
   height: 19px;
-  background: rgb(204, 204, 204);
+  background: #292929;
   position: absolute;
-  left: 2px;
+  left: -1px;
   top: 62px;
 }
 .iphonex__volume {
   width: 3px;
   height: 32px;
-  background: rgb(204, 204, 204);
+  background: #292929;
   position: absolute;
-  left: 2px;
+  left: -1px;
   top: 98px;
 }
 .iphonex__volume--down {
   top: 142px;
 }
+.shadowIphone {
+  background: linear-gradient(to bottom, transparent, #111 ${props => props.shadow || '350%'}) border-box; 
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
 `
 
-export default function IphoneX({Image, children}) {
-    return (
-        <Iphone>
-            <div className="iphonex">
-                <div className="iphonex__case" style={{
-                    background: "linear-gradient(#333, #111 330px) padding-box, linear-gradient(to bottom, #BDBDBD , #111 340px) border-box",
-                    border: "11px solid transparent"
-                }}>
-                    <div className="iphonex__notch">
-                        <div className="iphonex__speaker"></div>
-                        <div className="iphonex__camera"></div>
-                    </div>
-                    <div className="iphonex__screen">
+const ShadowIphone = styled.div`
 
-                    {children}
+`
 
-                    </div>
-                </div>
-                <div className="iphonex__power"></div>
-                <div className="iphonex__volume iphonex__volume--up"></div>
-                <div className="iphonex__volume iphonex__volume--down"></div>
-            </div>
-        </Iphone>
-    )
+export default function IphoneX({ Image, children, styles={} }) {
+  return (
+    <Iphone widthS={styles.width} heightS={styles.height} shadow={styles.shadow} style={styles}>
+      <div className="iphonex">
+        <div className="iphonex__case">
+          <div className="iphonex__notch">
+            <div className="iphonex__speaker"></div>
+            <div className="iphonex__camera"></div>
+          </div>
+          <div className="iphonex__screen">
+            <div className="shadowIphone" /> 
+            {children}
+
+          </div>
+        </div>
+        <div className="iphonex__power"></div>
+        <div className="iphonex__volume iphonex__volume--up"></div>
+        <div className="iphonex__volume iphonex__volume--down"></div>
+      </div>
+    </Iphone>
+  )
 }

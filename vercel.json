@@ -1,8 +1,0 @@
-{
-    "functions": {
-      "api/scanner/index.js": {
-        "includeFiles": "analytics/**"
-      }
-    }
-  }
-  

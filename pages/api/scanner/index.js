@@ -1,19 +1,32 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const fs = require("fs");
-import path from 'path'
+const path = require("path");
 const fetch = require("node-fetch");
+
+const minify = require("html-minifier").minify
+
+// const { Storage } = require('@google-cloud/storage');
+
+// firebase
+var admin = require("firebase-admin");
+var serviceAccount = require(`../../../key/serviceAccountKey.json`);
+
+const bucketUrl = 'gratis-artes-1602417255838.appspot.com';
+
+if (admin.apps.length === 0) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        storageBucket: bucketUrl,
+    });
+}
+
+
+const bucket = admin.storage().bucket();
 
 export default async (req, res) => { // 2
 
-    // URL of the page we want to scrape
-    // const url = "https://sitezinho.com.br/site/";
-    // const url = "https://trevopremios.com/";
-
     let { url } = req.query
-
-    // RESOLVER O PROBLEMA DA URL QUE NÃO ACEITA URL SEM HTTP OU HTTPS
-    // const url = "hajuda.me"
 
 
     function isValidURL(input) {
@@ -25,7 +38,6 @@ export default async (req, res) => { // 2
             '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
         return !!pattern.test(input);
     }
-
 
     // Async function which scrapes the data
     async function scrapeData() {
@@ -41,13 +53,12 @@ export default async (req, res) => { // 2
 
 
             // // Fetch HTML of the page we want to scrape
-
-            var myHeaders = new Headers();
+            const myHeaders = new Headers();
             myHeaders.append('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0')
             myHeaders.append('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
             myHeaders.append("Access-Control-Allow-Origin", "*")
 
-            var myInit = {
+            const myInit = {
                 headers: myHeaders,
             };
 
@@ -60,6 +71,7 @@ export default async (req, res) => { // 2
             try {
 
                 var response = await fetch(url, myInit)
+                // var response = await axios.get('https://hajuda.me')
 
             } catch (e) {
 
@@ -71,7 +83,7 @@ export default async (req, res) => { // 2
             const data = await response.text()
 
 
-            // // Load HTML we fetched in the previous line
+            // Load HTML we fetched in the previous line
             const $ = cheerio.load(data);
 
 
@@ -89,11 +101,11 @@ export default async (req, res) => { // 2
             }
 
             /* block css */
-            let links = $('link[href][rel="stylesheet"]')
+            const links = $('link[href][rel="stylesheet"]')
 
             for (const link of links) {
                 /* removendo o block de Styles */
-                $(link).attr("media", 'print').attr("onload", "this.media='all'");
+                $(link).attr("media", 'print').attr("onload", "this.media='all'; this.onload = null");
                 $('head').append(link);
                 /* removendo o block de Icons */
                 if (link.attribs.href.match('fontawesome.js|fontawesome.min')) {
@@ -110,6 +122,7 @@ export default async (req, res) => { // 2
                 }
 
             }
+
             const cssPrimarys = $('*[class]')
 
             let classPrimary = []
@@ -150,27 +163,35 @@ export default async (req, res) => { // 2
             const queryCssPrimary = Object.values(arrayCssPrimary).map(e => e[0]).join('|');
 
 
-            let promises = [];
+            const mixPromiseArray = [];
 
             for (let i = 0; i < links.length; i++) {
-                if (isValidURL(links[i].attribs.href)) {
-                    promises.push(axios.get(links[i].attribs.href));
-                }
 
+                if (isValidURL(links[i].attribs.href)) {
+                    mixPromiseArray.push(fetch(links[i].attribs.href))
+                }
 
             }
 
-            axios.all(promises).then(axios.spread((...args) => {
-                for (let i = 0; i < args.length; i++) {
 
-                    if (args[i].data.match(queryCssPrimary)) {
-                        $(`<link rel="preload" href="${args[i].config.url}" as="style">`).insertBefore('title')
-                    }
+            const responseCssPromise = await Promise.all(mixPromiseArray)
 
+            for await (const e of responseCssPromise) {
+
+                if(e.status != 200) return
+
+                const url = e.url
+
+                const data = await e.text()
+
+                if (data.match(queryCssPrimary)) {
+                    
+                    $(`<link rel="preload" href="${url}" as="style" />`).insertBefore('title')
                 }
-            }));
 
+            }
 
+            
 
             /* movendo tag script */
             const scripts = $('script[src]');
@@ -190,63 +211,80 @@ export default async (req, res) => { // 2
                     }
                 }
 
-                // if(script.attribs.src.match('facebook-embed.js|facebook-embed.min.js')){
-                //     $(script).removeAttr("async").attr("defer", '');
-                // }
+                if(script.attribs.src.match('facebook-embed.js|facebook-embed.min.js')){
+                    $(script).removeAttr("async").attr("defer", '');
+                }
 
                 $('head').append(script);
             }
-            
 
+            const minified = minify($.html(), {
+                removeComments: true,
+                removeCommentsFromCDATA: true,
+                collapseWhitespace: true,
+                collapseBooleanAttributes: true,
+                removeAttributeQuotes: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeOptionalTags: true,
+                removeEmptyElements: true,
+                minifyCSS: true,
+                minifyURLs: true,
+                minifyCSS: true,
+            })
+
+            res.send(minified)
             const token = Math.random().toString(36).substr(2);
-            // const path = `${process.cwd()}/public/analytics/${token}`
-            // const path2 = `${__dirname}/public/analytics/${token}`
-            
-            // const path = `${process.cwd()}/public/analytics/${token}`
 
-            // const dir = path.resolve('./public', 'analytics');
-            const file = fs.readFileSync(path.join(__dirname, 'analytics', 'index.html'), 'utf8')
-            res.send(file);
-            
-            fs.mkdir(path, { recursive: true }, err => {
+            const test = new Promise((resolve, reject) => {
 
-                if (err) throw 'erro ao criar folder';
+                const file = bucket.file(`${token}.html`)
+                const stream = file.createWriteStream({
+                    metadata: {
+                        contentType: 'text/html',
+                        // contentEncoding: 'gzip',
+                    },
+                    // contentType: 'text/html; charset=utf-8',
+                })
 
-                fs.writeFile(`${path}/index.html`, $.html(), err => {
+                stream.on("error", (e) => {
+                    throw 'erro ao enviar para o servidor'
+                    reject
+                });
 
-                    if (err) {
+                stream.on("finish", async () => {
+                    //tornar o arquivo publico
+                    await file.makePublic();
 
-                        fs.rmdir(path, { recursive: true }, err => { if (err) { throw 'erro ao excluir folder1'} });
-
-                        throw 'erro ao criar file'
-
-                    }
+                    //obter a url publica
+                    resolve(`https://storage.googleapis.com/${bucketUrl}/${token}.html`)
 
                 });
+
+                stream.end(Buffer.from(minified))
             })
+
+            let urlPublicHtml = await test;
 
 
             var responseGoogle;
 
-            // try {
-            //     // responseGoogle = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?strategy=mobile&url=https://faustos.vercel.app/analytics/${token}/index.html&locale=pt-BR`, myInit);
-            //     // responseGoogle = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?strategy=mobile&url=https://faustos.vercel.app&locale=pt-BR`, myInit);
+            try {
+                responseGoogle = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?strategy=mobile&url=${urlPublicHtml}&key=AIzaSyAsCedc8UwDt3aHNMMFFXpf3GHYkzV67WU&locale=pt-BR`, myInit);
 
-            // } catch (e) {
+            } catch (e) {
 
-            //     throw 'erro ao buscar dados no google speed page'
+                throw 'erro ao buscar dados no google speed page'
 
-            // }
+            }
 
+            if (responseGoogle.status != 200) throw 'erro na busca de dados na google pagespeed'
 
-            
             const lighthouse = await responseGoogle.json();
-            
-            if (lighthouse == undefined) throw 'erro nos dados do google speed page'
-                        
-            
+
             const lighthouseResult = lighthouse.lighthouseResult
-            
+
 
             const dataGoogle = {
                 'audits': {
@@ -291,20 +329,17 @@ export default async (req, res) => { // 2
                 'imagens': {
                     'Screenshot Thumbnails': lighthouseResult.audits['screenshot-thumbnails'].details.items ? lighthouseResult.audits['screenshot-thumbnails'].details.items : '',
                     // 'Full Page Screenshot': lighthouse ? lighthouseResult.audits['full-page-screenshot'].details.screenshot,
-                    'Final Screenshot': lighthouseResult.audits['final-screenshot'].details.data ? lighthouseResult.audits['final-screenshot'].details.data : ''
+                    'Final Screenshot': lighthouseResult.audits['final-screenshot'].details.data ? lighthouseResult.audits['final-screenshot'].details.data : '',
                 },
-                "token": token
             }
 
-            // fs.rmdirSync(path, { recursive: true }, err => { if (err) { throw 'erro ao excluir folder2'} });
 
-            // res.status(200).send($.html())
-            
-            res.send({path})
+            res.status(200).send(dataGoogle)
+
 
 
         } catch (err) {
-            res.status(404).send({ 'err': err, 'origem': 'scanner' });
+            res.status(400).send({ 'reason': err, 'origem': 'scanner' });
         }
     }
     // Invoke the above function

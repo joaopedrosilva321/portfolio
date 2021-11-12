@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 const Header = styled.div`
     padding: 60px 0 96px;
+    text-align: center;
 `
 
 const LabelHeaderText = styled.div`
@@ -24,16 +25,18 @@ const HeaderTextH1 = styled.h1`
     }
 `
 
-export default function HeaderText() {
+export default function HeaderText({title='', projeto='' }) {
     return (
         <Header>
             <div>
                 <LabelHeaderText>
-                    <span>Jobriver</span>
+                    {/* <span>Jobriver</span> */}
+                    <span>{projeto}</span>
                 </LabelHeaderText>
                 <div>
                     <HeaderTextH1>
-                        <span>Premium Technology & SaaS Template</span>
+                        {/* <span>Premium Technology & SaaS Template</span> */}
+                        <span>{title}</span>
                     </HeaderTextH1>
                 </div>
             </div>

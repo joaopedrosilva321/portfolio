@@ -8,6 +8,6 @@ const Input = styled.input`
     outline: 0;
 `
 
-export default function SpeedInput({ styles={}, value, setValue, disabled=false }) {
-    return <Input style={{ ...styles }} disabled={disabled} onChange={e => setValue(e.target.value)} value={value} type="text" placeholder="Insira uma URL do seu site aqui" />
+export default function SpeedInput({ styles={}, value='', setValue, disabled=false }) {
+    return <Input style={{ ...styles }} disabled={disabled} onChange={e => setValue(e.target.value)|| value} value={value} type="text" placeholder="Insira uma URL do seu site aqui" />
 }
