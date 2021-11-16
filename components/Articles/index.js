@@ -1,16 +1,21 @@
 import styled from 'styled-components'
+import Image from 'next/image'
 
 import Link from 'next/link'
 
 import thumbnail from '../../assets/farfetch/thumbnail.jpg'
-import thumbnail1 from '../../assets/farfetch/thumbnail1.jpg'
+import thumbnail1 from '../../assets/workana/thumbnail1.jpg'
 
 const ArticleContainer = styled.div`
     max-width: 1024px;
     // max-height: 352px;
-    margin: 32px 0;
-    display: flex;
     cursor: pointer;
+    @media only screen and (min-width: 564px) {
+        & {
+            margin: 32px 0;
+            display: flex;
+        }
+    }
 `
 const ArticleDescription = styled.p`
     color: ${props => props.theme.colorsDark.fonts.Quaternary};
@@ -23,8 +28,15 @@ const ArticleTitle = styled.h2`
 const ArticleImage = styled.article`
     // background: ${props => props.theme.colorsDark.background.Tertiary};
     border-radius: 8px;
-    width: 688px;
-    height: 504px;
+    width: 90vw;
+    // height: 504px;
+    margin: 0 auto;
+    @media only screen and (min-width: 564px) {
+        & {
+            width: 688px;
+            height: 504px;
+        }
+    }
     overflow: hidden;
 `
 // const ArticleTags = styled.div`
@@ -39,21 +51,24 @@ const ArticleImage = styled.article`
 
 export default function Articles() {
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-evenly', flexWrap: "wrap" }}>
+        <div id="articles" style={{ display: 'flex', justifyContent: 'space-evenly', flexWrap: "wrap" }}>
             <div>
                 <Link href="/farfetch">
                     <ArticleContainer>
                         <div>
                             <ArticleImage>
-                                <img src={thumbnail.src} alt="" />
+                                <img style={{width: '100%'}}  src={thumbnail.src} alt="" />
                             </ArticleImage>
                         </div>
                         <div style={{ margin: '0 0 0 24px' }}>
                             <div>
-                                <ArticleTitle>My very first article</ArticleTitle>
+                                <ArticleTitle>Farfetch</ArticleTitle>
                             </div>
                             <div>
-                                <ArticleDescription>Fill your Project brief here. it can be the outcome of the project, or some success metrics, or a cheesy tagline.</ArticleDescription>
+                                <ArticleDescription>
+                                    <p>Farfetch é uma referência mundialmente nas lojas online em relação à moda de grife</p>
+                                    <p>Sem perder suas principais características e mantendo a originalidade. Fizemos uma versão com design moderno e melhorando a experiência do usuário...</p>
+                                </ArticleDescription>
                             </div>
                         </div>
                     </ArticleContainer>
@@ -64,15 +79,18 @@ export default function Articles() {
                     <ArticleContainer>
                         <div style={{ margin: '0 24px' }}>
                             <div>
-                                <ArticleTitle>My very first article</ArticleTitle>
+                                <ArticleTitle>Workana</ArticleTitle>
                             </div>
                             <div>
-                                <ArticleDescription>Fill your Project brief here. it can be the outcome of the project, or some success metrics, or a cheesy tagline.</ArticleDescription>
+                                <ArticleDescription>
+                                    <p>Workana tem um grande papel no mercado de trabalho de freelancer, com foco nas contratações de trabalhadores independentes na plataforma</p>
+                                    <p>Particularmente, tenho algumas dificuldades nas cores do site em questão. Então decidir criar a minha versão destacando as partes que acho ter mais importância e ofuscando tudo que for secundário...</p>
+                                </ArticleDescription>
                             </div>
                         </div>
                         <div>
                             <ArticleImage>
-                                <img src={thumbnail1.src} alt="" />
+                                <img style={{width: '100%'}} src={thumbnail1.src} alt="" />
                             </ArticleImage>
                         </div>
                     </ArticleContainer>

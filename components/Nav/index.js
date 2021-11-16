@@ -11,7 +11,14 @@ const NavContainer = styled.nav`
     display: flex;
     align-items: center;
     // padding: 0 24px;
+    max-width: 1024px;
     justify-content: space-between;
+    margin: 0 24px;
+    @media only screen and (min-width: 564px) {
+        & {
+            margin: auto;
+        }
+    }
 `
 
 const Logo = styled.div`
@@ -22,7 +29,7 @@ const Logo = styled.div`
 `
 
 const NavContentsMobile = styled.div`
-    width: 64px;
+    width: 32px;
     height: 64px;
     display: flex;
     justify-content: center;
@@ -44,11 +51,22 @@ const NavContentsUl = styled.ul`
     left: 0px;
     padding: 0px;
     width: 100%;
+    background: #181818;
+    margin-top: 8px;
+    z-index: 1;
     @media only screen and (min-width: 564px) {
         & {
+            background: transparent;
             position: relative;
             display: flex !important;
+            margin: 0;
         }
+    }
+    & > li{
+        border-bottom: 1px solid transparent;
+    }
+    & > li:hover{
+        border-bottom: 1px solid rgba(254,254,254,0.1);
     }
 `
 
@@ -72,7 +90,8 @@ export default function Nav() {
                             <span>||</span>
                         </div>
                         <div>
-                            <span>hello@jpdevs.com</span>
+                            {/* <span>hello@jpdevs.com</span> */}
+                            <span>João Pedro Silva</span>
                         </div>
                     </Logo>
                 </a>
@@ -88,22 +107,22 @@ export default function Nav() {
                     </NavContentsMobile>
                     <NavContentsUl style={{ display: toggleMenu ? 'block' : 'none', color: '#BDBDBD' }}>
                         <li>
-                            <NavContentsLink href="aaa">
-                                <span>Work</span>
+                            <NavContentsLink href="/">
+                                <span>Inicio</span>
                             </NavContentsLink>
                         </li>
                         <li>
-                            <NavContentsLink href="bbb">
-                                <span>About</span>
+                            <NavContentsLink href="./#sobre">
+                                <span>Sobre</span>
                             </NavContentsLink>
                         </li>
                         <li>
-                            <NavContentsLink href="ccc">
-                                <span>Articles</span>
+                            <NavContentsLink href="./#articles">
+                                <span>Artigos</span>
                             </NavContentsLink>
                         </li>
                         <li>
-                            <NavContentsLink href="ddd">
+                            <NavContentsLink href="#">
                                 <span>Experiments</span>
                             </NavContentsLink>
                         </li>

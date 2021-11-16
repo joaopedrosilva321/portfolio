@@ -115,6 +115,43 @@ const TextOverView = styled.div`
     width: 100%;
     // align-items: center;
     margin: 24px 0;
+    @media only screen and (min-width: 564px) {
+        & {
+            margin: 24px auto;
+        }
+    }
+`;
+
+const OverviewStyle = styled.div`
+    max-width: 904px;
+    margin: 24px 24px;
+    @media only screen and (min-width: 564px) {
+        & {
+            margin: 64px auto;
+        }
+    }
+`;
+
+const Detalhes = styled.div`
+    display: flex; 
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 16px 24px;
+    max-width: 904px;
+    @media only screen and (min-width: 564px) {
+        & {
+            margin: 16px auto;
+        }
+    }
+`
+const Proposta = styled.div`
+    max-width: 904px; 
+    margin: 64px 24px;
+    @media only screen and (min-width: 564px) {
+        & {
+            margin: 16px auto;
+        }
+    }
 `
 
 export default function Projects() {
@@ -125,8 +162,7 @@ export default function Projects() {
             <Nav />
             <Header title="Redesign & Cores" projeto="Workana" />
             <div>
-                <div style={{ maxWidth: '904px', margin: '64px auto' }}>
-                    {/* <Overview/> */}
+                <OverviewStyle>
                     <div>
                         <h2 style={{ margin: 0, fontSize: 48, maxWidth: '489px', color: '#FFFFFF' }}><span>Overview</span></h2>
                     </div>
@@ -142,8 +178,8 @@ export default function Projects() {
                             <img style={{ width: '100%' }} src={mobile1.src} alt="" />
                         </Iphone>
                     </TextOverView>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', margin: '16px auto', maxWidth: '904px' }}>
+                </OverviewStyle>
+                <Detalhes>
                     <div style={{ margin: '16px 0', display: 'flex' }}>
                         <div >
                             <h4 style={{ margin: 0, color: '#FFFFFF' }}>Tags:</h4>
@@ -171,12 +207,12 @@ export default function Projects() {
                             <span>1 semanas</span>
                         </div>
                     </div>
-                </div>
+                </Detalhes>
 
             </div>
 
 
-            <div style={{ maxWidth: '904px', margin: '64px auto' }}>
+            <Proposta>
                 <div style={{ padding: "16px 0" }}>
                     <div>
                         <h2 style={{ margin: 0, fontSize: 40, color: "#FFFFFF" }}>Problema</h2>
@@ -204,12 +240,12 @@ export default function Projects() {
                         <p>Qualquer coisa que você coloque instantaneamente já vira um holofote sejam imagens, botões, etc. O site não disputa com o conteúdo, ele o ajuda a destacasse</p>
                     </div>
                 </div>
-            </div>
+            </Proposta>
 
             <div style={{ maxWidth: '904px', margin: '0 auto' }}>
-                <div>
-                    <h2 style={{ margin: 0, fontSize: 40, color: "#FFFFFF" }}>Mobile</h2>
-                </div>
+                <Proposta>
+                    <h2 style={{ margin: 0 , fontSize: 40, color: "#FFFFFF" }}>Mobile</h2>
+                </Proposta>
                 <div style={{ overflowX: 'scroll', margin: '32px 0' }}>
                     <div style={{ display: 'flex', width: 'max-content' }}>
                         <Iphone styles={{ margin: '0 24px 0', width: '296px', height: '550px' }}>
@@ -223,9 +259,9 @@ export default function Projects() {
 
             </div>
             <div style={{ maxWidth: '904px', margin: '0 auto' }}>
-                <div>
+                <Proposta>
                     <h2 style={{ margin: 0, fontSize: 40, color: "#FFFFFF" }}>Desktop</h2>
-                </div>
+                </Proposta>
                 <div style={{ overflowX: 'scroll', margin: '32px 0' }}>
                     <div style={{ display: 'flex', width: '100%' }}>
                         <Iphone styles={{ margin: '0 24px 0', width: '792px', height: '450px' }}>

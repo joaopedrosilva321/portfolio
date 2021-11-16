@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import Image from "next/image"
 
-import ImagemProfile from '../../public/a.png'
+import imageProfile from '../../assets/default/PRUvh0J_192_192.jpg'
 
 const ImagemContant = styled.div`
 width: 160px;
@@ -54,10 +54,10 @@ margin: 0 auto;
 
 export default function Header() {
     return (
-        <div style={{padding: "60px 3% 96px"}}>
+        <div id="sobre" style={{padding: "60px 3% 96px"}}>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <ImagemContant>
-                    <Image width={160} height={160} src={ImagemProfile} />
+                    <Image width={196} height={196} src={imageProfile} />
                 </ImagemContant>
             </div>
             <div>

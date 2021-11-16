@@ -23,10 +23,10 @@ const StyleFonteSpan = styled.span`
 
 export default function FooterConvite() {
     return (
-        <div style={{margin: "144px 0"}}>
+        <div style={{margin: "144px 24px"}}>
             <div>
                 <StyleFonte>
-                Deixe-me saber se você deseja falar sobre uma possível colaboração. Estou disponível para trabalho freelance.
+                Deixe-me saber como posso te ajudar sobre uma possível colaboração. Estou disponível para trabalhos freelance.
                 </StyleFonte>
             </div>
             <div>

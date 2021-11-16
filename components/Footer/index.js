@@ -8,6 +8,7 @@ const FooterContainer = styled.div`
     flex-wrap: wrap;
     color: ${props => props.theme.colorsDark.fonts.Quaternary};
     margin-top: 68px;
+    margin: 0 24px;
     @media only screen and (min-width: 564px) {
         & {
             display: flex;
@@ -39,33 +40,41 @@ const MenuFooter = styled.div`
     }
 `
 
-export default function Footer(){
-    return(
+export default function Footer() {
+    return (
         <FooterContainer>
-            <FooterLink as="div" style={{ padding: "20px 0"}}>
-                <span>© 2021 your name</span>
+            <FooterLink as="div" style={{ padding: "20px 0" }}>
+                <span>© 2021 João Pedro Silva</span>
             </FooterLink>
             <div>
                 <MenuFooter as="ul">
                     <li>
-                        <FooterLink>
-                            <span>Works</span>
-                        </FooterLink>
+                        <a href="/">
+                            <FooterLink>
+                                <span>Inicio</span>
+                            </FooterLink>
+                        </a>
                     </li>
                     <li>
-                        <FooterLink>
-                            <span>About</span>
-                        </FooterLink>
+                        <a href="./#sobre">
+                            <FooterLink>
+                                <span>Sobre</span>
+                            </FooterLink>
+                        </a>
                     </li>
                     <li>
-                        <FooterLink>
-                            <span>Articles</span>
-                        </FooterLink>
+                        <a href="./#articles">
+                            <FooterLink>
+                                <span>Artigos</span>
+                            </FooterLink>
+                        </a>
                     </li>
                     <li>
-                        <FooterLink>
-                            <span>Experiments</span>
-                        </FooterLink>
+                        <a href="#">
+                            <FooterLink>
+                                <span>Experiments</span>
+                            </FooterLink>
+                        </a>
                     </li>
                 </MenuFooter>
             </div>
